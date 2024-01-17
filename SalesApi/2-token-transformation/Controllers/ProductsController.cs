@@ -18,6 +18,11 @@ public class ProductsController(IMapper mapper, IProductRepository productReposi
     [HttpGet("{id}", Name = "GetProduct")]
     public async Task<ActionResult<IEnumerable<ProductDTO>>> GetById([FromRoute] string id)
     {
+        if (id is null || id.Length > 10 || id.Any(character => !Char.IsLetterOrDigit(character)))
+        {
+            return BadRequest();
+        }
+
         return Ok(mapper.Map<ProductDTO>(await productRepository.GetBy(id)));
     }
 }

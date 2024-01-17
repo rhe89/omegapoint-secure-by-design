@@ -30,6 +30,23 @@ public class ProductsController(IMapper mapper, IProductRepository productReposi
             return Forbid();
         }
 
+        var product = await productRepository.GetBy(id);
+
+        if (product == null)
+        {
+            return NotFound();
+        }
+
+        var userHasPermissionToProductMarket = User.HasClaim(
+            claim =>
+                claim.Type == "urn:permissions:market" &&
+                claim.Value == product.MarketId);
+
+        if (!userHasPermissionToProductMarket)
+        {
+            return Forbid();
+        }
+
         return Ok(mapper.Map<ProductDTO>(await productRepository.GetBy(id)));
     }
 }

@@ -16,11 +16,18 @@ internal class ClaimsTransformation(IUserPermissionRepository userPermissionRepo
             AddPermissionIfScope(identity, "products.read", new Claim("urn:permissions:products:read", "true"));
             AddPermissionIfScope(identity, "products.write", new Claim("urn:permissions:products:write", "true"));
 
-            var sub = principal.FindFirstValue("sub");
-            var userPermission = await userPermissionRepository.GetUserMarketPermissions(sub);
-            foreach (var permission in userPermission)
+            var userId = principal.FindFirstValue("sub");
+
+            if (userId == null)
             {
-                identity.AddClaim(new Claim("urn:permissions:market", permission));
+                return new ClaimsPrincipal(identity);
+            }
+
+            var marketPermissions = await userPermissionRepository.GetUserMarketPermissions(userId);
+
+            foreach (var marketPermission in marketPermissions)
+            {
+                identity.AddClaim(new Claim("urn:permissions:market", marketPermission));
             }
 
             return new ClaimsPrincipal(identity);

@@ -23,6 +23,13 @@ public class ProductsController(IMapper mapper, IProductRepository productReposi
             return BadRequest("Parameter id is not well formed");
         }
 
+        var canReadProducts = !User.HasClaim(x => x.Type == "urn:permissions:products:read" && x.Value == "true");
+
+        if (!canReadProducts)
+        {
+            return Forbid();
+        }
+
         return Ok(mapper.Map<ProductDTO>(await productRepository.GetBy(id)));
     }
 }

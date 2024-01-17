@@ -9,7 +9,8 @@ namespace SalesApi.Infrastructure
     {
         public MappingProfile()
         {
-            CreateMap<Product, ProductDTO>();
+            CreateMap<Product, ProductDTO>()
+                .ForMember(x => x.Id, opt => opt.MapFrom(dto => dto.Id.Value));
         }
     }
 }

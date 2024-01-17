@@ -38,6 +38,7 @@ builder.Services.AddAuthorization(options =>
 
 builder.Services.AddSingleton<IUserPermissionRepository, UserPermissionRepository>();
 builder.Services.AddSingleton<IProductRepository, ProductRepository>();
+builder.Services.AddSingleton<ClaimsTransformation>();
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -60,4 +61,3 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
-
